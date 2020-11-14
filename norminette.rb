@@ -6,6 +6,7 @@ require 'parseconfig'
 require 'securerandom'
 
 $current_path = Dir.pwd
+$exit_code = 0
 
 if File.symlink?(__FILE__)
 	    dir = File.expand_path(File.dirname(File.readlink(__FILE__)))
@@ -143,9 +144,10 @@ class Norminette
 	end
 
 	def manage_result result
-		puts "Norme: #{cleanify_path(result['filename'])}" 	if result['filename']
-		puts result['display']	 							if result['display']
-		exit 0 												if result['stop'] == true
+		puts "Norme: #{cleanify_path(result['filename'])}"	if result['filename']
+		puts result['display']	 				if result['display']
+		$exit_code = 1                                      	if result['display']
+		exit 0 							if result['stop'] == true
 	end
 end
 
@@ -183,4 +185,4 @@ class Parser
 end
 
 Norminette.new.check ARGV, Parser.parse(ARGV) if __FILE__ == $0
-
+exit $exit_code
